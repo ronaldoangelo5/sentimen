@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+{% block content%}
+
+<div class="container-fluid ">
+  <div class="row">
+    <div class="col-sm-6 border mx-auto my-3 p-3 bg-white">
+
+      <form action="" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+      <input type="submit" class="btn btn-primary float-right" value="submit">
+      </form>
+
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'main.html' %}
+  {% block content %}
+<div class="container mt-3">
+  <div class="container-fluid">
+    <div class="mx-auto">
+      <div class="col-sm-6 border mx-auto my-3 p-3 bg-white">
+      <div class="d-grid gap-3">
+        <div class="h3">{{komentar.wisata.nama}}</div>
+        <div class="text-muted">{{komentar.wisata.alamat}}</div>
+        <br>
+        <div class="bg-white lead text-center"><em>"{{komentar.kalimat}}"</em></div>
+          <br>
+        <div class="bg-white">
+          <div class="alert alert-primary" role="alert">
+            Positif : {{proba.1}} %
+          </div>
+          <br>
+          <div class="alert alert-dark" role="alert">
+            Negatif : {{proba.0}} %
+          </div>
+        </div>
+        <br>
+        <div class="bg-white">
+          Sentimen :
+          {% if komentar.sentimen == True %}
+            Positif
+          {% else %}
+            Negatif
+          {% endif %}
+        </div>
+        <div class="p-1">
+          <div id="container" style="width: 75%;">
+            <canvas id="proba-chart"></canvas>
+          </div>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+          <script>
+
+            var config = {
+              type: 'doughnut',
+              data: {
+                datasets: [{
+                  data: [ {{ proba.1 }} , {{ proba.0 }}],
+                  backgroundColor: [
+                    '#656CCB', '#E1E1E1', '#A9A9A9', '#C0C0C0', '#D3D3D3'
+                  ],
+                  label: 'Population'
+                }],
+                labels: ['positif','negatif']
+              },
+              options: {
+                responsive: true
+              }
+            };
+
+            Chart.pluginService.register({
+              beforeDraw: function(chart) {
+                var width = chart.chart.width,
+                    height = chart.chart.height,
+                    ctx = chart.chart.ctx;
+
+                ctx.restore();
+                var fontSize = (height / 114).toFixed(2);
+                ctx.font = fontSize + "em sans-serif";
+                ctx.textBaseline = "middle";
+
+                var text = {{proba}},
+                    textX = Math.round((width - ctx.measureText(text).width) / 2),
+                    textY = height / 2;
+
+                ctx.fillText(text, textX, textY);
+                ctx.save();
+              }
+            });
+
+            window.onload = function() {
+              var ctx = document.getElementById('proba-chart').getContext('2d');
+              window.myPie = new Chart(ctx, config);
+            };
+
+          </script>
+      </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
